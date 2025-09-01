@@ -1,15 +1,52 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Jogo da Memória</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Página Inicial</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #4b0082, #800080);
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+    }
+
+    .btn-jogar {
+      display: inline-block;
+      padding: 1rem 2rem;
+      background-color: #9b30ff;
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.25rem;
+      border-radius: 8px;
+      border: none;
+      transition: background-color 0.3s;
+      cursor: pointer;
+    }
+
+    .btn-jogar:hover {
+      background-color: #7a1fb2;
+    }
+  </style>
 </head>
 <body>
-  <h1>Jogo da Memória</h1>
-  <section class="game-board" id="gameBoard"></section>
-
-  <script src="script.js"></script>
+  <div class="container">
+    <h1>Bem-vindo ao Jogo</h1>
+    <a href="jg.html" class="btn-jogar">Aqui começa o jogo</a>
+  </div>
 </body>
 </html>
