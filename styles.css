@@ -66,3 +66,18 @@ h1 {
   align-items: center;
   font-size: 32px;
 }
+
+#restart-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#restart-btn:hover {
+  background-color: #2980b9;
+}

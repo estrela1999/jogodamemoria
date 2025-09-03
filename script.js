@@ -67,3 +67,20 @@ function resetBoard() {
 }
 
 createBoard();
+
+document.getElementById('restart-btn').addEventListener('click', restartGame);
+
+function restartGame() {
+  // Remove todas as classes flip
+  cards.forEach(card => {
+    card.classList.remove('flip');
+    card.addEventListener('click', flipCard); // Reativa o clique
+  });
+
+  // Embaralha novamente
+  shuffle();
+
+  // Reseta o estado do jogo
+  resetBoard();
+}
+
