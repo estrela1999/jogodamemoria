@@ -1,8 +1,8 @@
-const icons = ['🐶','🐱','🦊','🐻','🦁','🐼','🐨','🐵'];
-let board = [];
-let firstCard = null;
-let secondCard = null;
-let lockBoard = false;
+const icons      = ['🐶','🐱','🦊','🐻','🦁','🐼','🐨','🐵'];
+let board        = [];
+let firstCard    = null;
+let secondCard   = null;
+let lockBoard    = false;
 
 function shuffle(array) {
   return array.sort(() => Math.random() - 0.5);
@@ -10,8 +10,15 @@ function shuffle(array) {
 
 function createBoard() {
   const gameBoard = document.getElementById('gameBoard');
-  board = shuffle([...icons, ...icons]);  // duplica e embaralha
-  board.forEach((icon, index) => {
+
+  // Limpa qualquer carta antiga
+  gameBoard.innerHTML = '';
+
+  // Prepara e embaralha as cartas
+  board = shuffle([...icons, ...icons]);
+
+  // Renderiza as cartas
+  board.forEach(icon => {
     const card = document.createElement('div');
     card.classList.add('card');
     card.dataset.icon = icon;
@@ -66,21 +73,12 @@ function resetBoard() {
   [firstCard, secondCard, lockBoard] = [null, null, false];
 }
 
-createBoard();
-
-document.getElementById('restart-btn').addEventListener('click', restartGame);
-
+// Função de reinício: limpa o tabuleiro e recria tudo
 function restartGame() {
-  // Remove todas as classes flip
-  cards.forEach(card => {
-    card.classList.remove('flip');
-    card.addEventListener('click', flipCard); // Reativa o clique
-  });
-
-  // Embaralha novamente
-  shuffle();
-
-  // Reseta o estado do jogo
   resetBoard();
+  createBoard();
 }
 
+// Inicialização
+createBoard();
+document.getElementById('restart-btn').addEventListener('click', restartGame);
