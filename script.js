@@ -5,19 +5,17 @@ let secondCard   = null;
 let lockBoard    = false;
 
 function shuffle(array) {
-  return array.sort(() => Math.random() - 0.5);
+  // Faz uma cópia e embaralha
+  return [...array].sort(() => Math.random() - 0.5);
 }
 
 function createBoard() {
   const gameBoard = document.getElementById('gameBoard');
-
-  // Limpa qualquer carta antiga
   gameBoard.innerHTML = '';
 
-  // Prepara e embaralha as cartas
+  // Duplica e embaralha
   board = shuffle([...icons, ...icons]);
 
-  // Renderiza as cartas
   board.forEach(icon => {
     const card = document.createElement('div');
     card.classList.add('card');
@@ -28,6 +26,7 @@ function createBoard() {
         <div class="card-back">?</div>
       </div>
     `;
+
     card.addEventListener('click', flipCard);
     gameBoard.appendChild(card);
   });
@@ -36,6 +35,8 @@ function createBoard() {
 function flipCard(e) {
   if (lockBoard) return;
   const clicked = e.currentTarget;
+
+  // evita clicar duas vezes na mesma carta
   if (clicked === firstCard) return;
 
   clicked.classList.add('flipped');
@@ -50,35 +51,38 @@ function flipCard(e) {
 }
 
 function checkForMatch() {
-  const isMatch = firstCard.dataset.icon === secondCard.dataset.icon;
-  isMatch ? disableCards() : unflipCards();
+  const match = firstCard.dataset.icon === secondCard.dataset.icon;
+
+  match ? disableCards() : unflipCards();
 }
 
 function disableCards() {
   firstCard.removeEventListener('click', flipCard);
   secondCard.removeEventListener('click', flipCard);
-  resetBoard();
+  resetBoardState();
 }
 
 function unflipCards() {
   lockBoard = true;
+
   setTimeout(() => {
     firstCard.classList.remove('flipped');
     secondCard.classList.remove('flipped');
-    resetBoard();
+    resetBoardState();
   }, 1000);
 }
 
-function resetBoard() {
+function resetBoardState() {
   [firstCard, secondCard, lockBoard] = [null, null, false];
 }
 
-// Função de reinício: limpa o tabuleiro e recria tudo
 function restartGame() {
-  resetBoard();
+  resetBoardState();
   createBoard();
 }
 
-// Inicialização
+// Inicializa o jogo
 createBoard();
-document.getElementById('restart-btn').addEventListener('click', restartGame);
+document
+  .getElementById('restart-btn')
+  .addEventListener('click', restartGame);
