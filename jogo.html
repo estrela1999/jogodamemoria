@@ -8,11 +8,14 @@
 </head>
 <body>
   <h1>Jogo da Memória</h1>
-  <section class="game-board" id="gameBoard"></section>
 
-  <script src="script.js"></script>
-  
+  <!-- Tabuleiro -->
+  <section id="gameBoard" class="game-board"></section>
+
+  <!-- Botão de reiniciar (agora antes do script) -->
   <button id="restart-btn">🔄 Reiniciar Jogo</button>
 
+  <!-- Script só é executado após o botão existir no DOM -->
+  <script src="script.js"></script>
 </body>
 </html>
