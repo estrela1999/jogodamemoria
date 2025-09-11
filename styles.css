@@ -83,3 +83,30 @@ h1 {
   background-color: #4a90e2;
   transform: rotateY(180deg);
 }
+
+/* container e layout continuam iguais… */
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+}
+
+/* estado inicial: verso visível, frente escondida */
+.card-front {
+  backface-visibility: hidden;
+  transform: rotateY(180deg);
+}
+
+.card-back {
+  backface-visibility: hidden;
+  /* sem rotação: quadro liso visível */
+  transform: rotateY(0deg);
+}
+
+/* quando “flipped”, giramos o .card-inner e mostramos a frente */
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}

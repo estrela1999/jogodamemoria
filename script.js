@@ -138,3 +138,39 @@ function resetTurn() {
   [firstCard, secondCard] = [null, null];
   lockBoard = false;
 }
+
+function setupLevel() {
+  // … seu cálculo de pairs e embaralhamento …
+
+  gameBoard.innerHTML = '';
+  [firstCard, secondCard, lockBoard, matchedCount] = [null, null, false, 0];
+
+  // Cria as cartas SEM a classe .flipped
+  deck.forEach(icon => {
+    const card = document.createElement('div');
+    card.classList.add('card');
+    card.dataset.icon = icon;
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="card-front">${icon}</div>
+        <div class="card-back"></div>
+      </div>
+    `;
+    card.addEventListener('click', flipCard);
+    gameBoard.appendChild(card);
+  });
+
+  startTimer();
+}
+
+// após montar o tabuleiro…
+gameBoard.querySelectorAll('.card').forEach(card =>
+  card.classList.add('flipped')  // mostra fronts
+);
+
+setTimeout(() => {
+  gameBoard.querySelectorAll('.card').forEach(card =>
+    card.classList.remove('flipped')  // volta pro verso
+  );
+  startTimer();
+}, 3000);
