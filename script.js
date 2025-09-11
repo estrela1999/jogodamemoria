@@ -134,3 +134,4 @@ createBoard();
 document
   .getElementById('restart-btn')
   .addEventListener('click', restartGame);
+  
