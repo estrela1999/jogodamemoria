@@ -1,100 +1,85 @@
-/* Reset de box-sizing para todos os elementos */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+/* styles.css */
 
-/* Corpo da página */
 body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f0f0f0;
   margin: 0;
-  padding: 20px;
-  font-family: sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #f4f4f4;
+  padding: 2rem;
 }
 
-/* Título */
 h1 {
-  margin-bottom: 20px;
+  margin-bottom: 1rem;
 }
 
-/* Tabuleiro */
+.status {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
 .game-board {
   display: grid;
-  grid-template-columns: repeat(4, 100px);
-  gap: 15px; /* Substituído grid-gap por gap */
+  grid-gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
 }
 
-/* Cartão */
+.game-board.level-1 {
+  grid-template-columns: repeat(4, 100px);
+}
+
+.game-board.level-2 {
+  grid-template-columns: repeat(6, 100px);
+}
+
+.game-board.level-3 {
+  grid-template-columns: repeat(6, 100px);
+}
+
 .card {
   width: 100px;
   height: 100px;
+  position: relative;
   perspective: 600px;
   cursor: pointer;
-  user-select: none; /* Evita seleção de texto ao clicar */
 }
 
-/* Conteúdo interno para o efeito 3D */
 .card-inner {
   width: 100%;
   height: 100%;
-  position: relative;
+  transition: transform 0.5s;
   transform-style: preserve-3d;
-  transition: transform 0.6s;
+  position: absolute;
 }
 
-/* Estado virado */
-.card.flip .card-inner {
+.card.flipped .card-inner {
   transform: rotateY(180deg);
 }
 
-/* Faces do cartão */
 .card-front,
 .card-back {
-  position: absolute;
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
   border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-/* Verso (back) */
-.card-back {
-  background-color: #2e3d49;
-  color: #fff;
-  font-size: 24px;
-}
-
-/* Frente (front) */
 .card-front {
   background-color: #fff;
-  transform: rotateY(180deg);
-  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
 }
 
-/* Botão de reiniciar */
-#restart-btn {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #3498db;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#restart-btn:hover {
-  background-color: #2980b9;
-}
-
-/* Altere esta regra para “flipped” */
-.card.flipped .card-inner {
+.card-back {
+  background-color: #4a90e2;
   transform: rotateY(180deg);
 }

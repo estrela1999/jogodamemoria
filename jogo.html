@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Jogo da Memória</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <title>Memória Progressiva</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <h1>Jogo da Memória</h1>
-<h1 id="game-title">Jogo da Memória – Nível 1</h1>
 
-  <!-- Tabuleiro -->
-  <section id="gameBoard" class="game-board"></section>
+  <!-- Exibição do nível e do tempo -->
+  <div class="status">
+    <span id="level">Nível: 1</span>
+    <span id="timer">Tempo: 0s</span>
+  </div>
 
-  <!-- Botão de reiniciar (agora antes do script) -->
-  <button id="restart-btn">🔄 Reiniciar Jogo</button>
+  <div class="game-board" id="gameBoard"></div>
+  <button id="resetButton">Reiniciar</button>
 
-  <!-- Script só é executado após o botão existir no DOM -->
   <script src="script.js"></script>
 </body>
 </html>
