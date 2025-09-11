@@ -1,136 +1,145 @@
-// 1. Lista de emojis ampliada para suportar vários níveis
-const iconsMaster = [
-  '🐶','🐱','🦊','🐻','🦁','🐼','🐨','🐵',
-  '🐷','🐸','🐔','🐴','🐮','🐥','🦉','🦄'
+// script.js
+
+const PREVIEW_TIME = 5000;      // 5 segundos de pré-visualização
+const icons = [
+  '🍎','🍌','🍇','🍉','🍒','🥝',
+  '🍍','🥭','🍓','🥥','🥑','🍐'
 ];
 
-let level         = 1;
-const initialPairs  = 4;   // começa com 4 pares (8 cartas)
-const pairsIncrement = 2;  // adiciona 2 pares a cada nível
+let currentLevel = 1;
+const maxLevel = Math.ceil(icons.length / 4);
+let deck = [], firstCard = null, secondCard = null;
+let lockBoard = false, matchedCount = 0;
 
-let board           = [];
-let firstCard       = null;
-let secondCard      = null;
-let lockBoard       = false;
-let matchesFound    = 0;
+let levelElement, timerElement;
+let timeElapsed = 0, timerInterval = null;
+let resetButton, gameBoard;
 
-// Embaralha cópia de um array
-function shuffle(array) {
-  return [...array].sort(() => Math.random() - 0.5);
+document.addEventListener('DOMContentLoaded', () => {
+  levelElement  = document.getElementById('level');
+  timerElement  = document.getElementById('timer');
+  resetButton   = document.getElementById('resetButton');
+  gameBoard     = document.getElementById('gameBoard');
+
+  resetButton.addEventListener('click', () => {
+    currentLevel = 1;
+    setupLevel();
+  });
+
+  setupLevel();
+});
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
 }
 
-// Atualiza título com o nível atual
-function updateTitle() {
-  const title = document.getElementById('game-title');
-  title.textContent = `Jogo da Memória – Nível ${level}`;
+function startTimer() {
+  clearInterval(timerInterval);
+  timeElapsed = 0;
+  timerElement.textContent = `Tempo: 0s`;
+  timerInterval = setInterval(() => {
+    timeElapsed++;
+    timerElement.textContent = `Tempo: ${timeElapsed}s`;
+  }, 1000);
 }
 
-// Cria o tabuleiro de acordo com o nível
-function createBoard() {
-  const gameBoard = document.getElementById('gameBoard');
+function stopTimer() {
+  clearInterval(timerInterval);
+}
+
+function setupLevel() {
+  // Exibe nível
+  levelElement.textContent = `Nível: ${currentLevel}`;
+
+  // Quantidade de pares
+  const pairs = Math.min(currentLevel * 4, icons.length);
+
+  // Prepara deck
+  deck = icons.slice(0, pairs).concat(icons.slice(0, pairs));
+  shuffle(deck);
+
+  // Renderiza grid
+  gameBoard.className = `game-board level-${currentLevel}`;
   gameBoard.innerHTML = '';
+  [firstCard, secondCard, lockBoard, matchedCount] = [null, null, false, 0];
+  stopTimer();
 
-  // Quantos pares teremos neste nível?
-  const currentPairs = initialPairs + (level - 1) * pairsIncrement;
-
-  // Seleciona e duplica os ícones para formar pares
-  const iconsForLevel = shuffle(iconsMaster).slice(0, currentPairs);
-  board = shuffle([...iconsForLevel, ...iconsForLevel]);
-
-  // Ajusta colunas para um layout mais quadrado
-  const totalCards = board.length;
-  const cols = Math.min(6, Math.ceil(Math.sqrt(totalCards)));
-  gameBoard.style.gridTemplateColumns = `repeat(${cols}, 100px)`;
-
-  // Renderiza cada carta
-  board.forEach(icon => {
+  // Cria cartas
+  deck.forEach(icon => {
     const card = document.createElement('div');
-    card.classList.add('card');
+    card.className = 'card';
     card.dataset.icon = icon;
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-front">${icon}</div>
-        <div class="card-back">?</div>
+        <div class="card-back"></div>
       </div>
     `;
     card.addEventListener('click', flipCard);
     gameBoard.appendChild(card);
   });
 
-  // Reseta variáveis de controle
-  matchesFound = 0;
-  resetBoardState();
-  updateTitle();
+  // PRÉ-VISUALIZAÇÃO: cartas pra cima por PREVIEW_TIME ms
+  const cards = gameBoard.querySelectorAll('.card');
+  cards.forEach(c => c.classList.add('flipped'));
+
+  setTimeout(() => {
+    cards.forEach(c => c.classList.remove('flipped'));
+    startTimer();
+  }, PREVIEW_TIME);
 }
 
-// Quando o jogador vira uma carta
-function flipCard(e) {
-  if (lockBoard) return;
-  const clicked = e.currentTarget;
-  if (clicked === firstCard) return;
-
-  clicked.classList.add('flipped');
-
+function flipCard() {
+  if (lockBoard || this === firstCard) return;
+  this.classList.add('flipped');
   if (!firstCard) {
-    firstCard = clicked;
-    return;
+    firstCard = this;
+  } else {
+    secondCard = this;
+    checkForMatch();
   }
-
-  secondCard = clicked;
-  checkForMatch();
 }
 
-// Verifica se formou par
 function checkForMatch() {
-  const isMatch = firstCard.dataset.icon === secondCard.dataset.icon;
-  isMatch ? disableCards() : unflipCards();
+  if (firstCard.dataset.icon === secondCard.dataset.icon) {
+    disableCards();
+  } else {
+    unflipCards();
+  }
 }
 
-// Desabilita cartas que deram match e confere fim de nível
 function disableCards() {
   firstCard.removeEventListener('click', flipCard);
   secondCard.removeEventListener('click', flipCard);
-
-  matchesFound++;
-
-  // Se todos os pares foram encontrados, avança de nível
-  const currentPairs = initialPairs + (level - 1) * pairsIncrement;
-  if (matchesFound === currentPairs) {
-    setTimeout(() => nextLevel(), 500);
+  matchedCount += 2;
+  resetTurn();
+  if (matchedCount === deck.length) {
+    stopTimer();
+    setTimeout(() => {
+      if (currentLevel < maxLevel) {
+        alert(`Nível ${currentLevel} concluído em ${timeElapsed}s! Próximo nível.`);
+        currentLevel++;
+        setupLevel();
+      } else {
+        alert(`Parabéns! Você completou todos os níveis em ${timeElapsed}s.`);
+      }
+    }, 500);
   }
-
-  resetBoardState();
 }
 
-// Revira cartas que não formaram par
 function unflipCards() {
   lockBoard = true;
   setTimeout(() => {
     firstCard.classList.remove('flipped');
     secondCard.classList.remove('flipped');
-    resetBoardState();
+    resetTurn();
   }, 1000);
 }
 
-// Reseta ponteiros e desbloqueia o tabuleiro
-function resetBoardState() {
-  [firstCard, secondCard, lockBoard] = [null, null, false];
+function resetTurn() {
+  [firstCard, secondCard] = [null, null];
+  lockBoard = false;
 }
-
-// Avança para o próximo nível e recria o tabuleiro
-function nextLevel() {
-  level++;
-  createBoard();
-}
-
-// Reinicia o jogo do nível 1
-function restartGame() {
-  level = 1;
-  createBoard();
-}
-
-// Inicialização
-createBoard();
-document
-  .getElementById('restart-btn')
-  .addEventListener('click', restartGame);
