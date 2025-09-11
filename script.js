@@ -1,9 +1,12 @@
 // script.js
 
-const icons = ['🍎','🍌','🍇','🍉','🍒','🥝','🍍','🥭','🍓','🥥','🥑','🍐'];
+const icons = [
+  '🍎','🍌','🍇','🍉','🍒','🥝',
+  '🍍','🥭','🍓','🥥','🥑','🍐'
+];
 
 let currentLevel   = 1;
-let maxLevel       = Math.ceil(icons.length / 4);
+const maxLevel     = Math.ceil(icons.length / 4);
 let deck           = [];
 let firstCard      = null;
 let secondCard     = null;
@@ -13,7 +16,7 @@ let matchedCount   = 0;
 // Temporizador
 let timerElement, timeElapsed = 0, timerInterval = null;
 
-// Status e controles
+// Controles
 let levelElement, resetButton, gameBoard;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -41,6 +44,7 @@ function startTimer() {
   clearInterval(timerInterval);
   timeElapsed = 0;
   timerElement.textContent = `Tempo: 0s`;
+
   timerInterval = setInterval(() => {
     timeElapsed++;
     timerElement.textContent = `Tempo: ${timeElapsed}s`;
@@ -52,23 +56,23 @@ function stopTimer() {
 }
 
 function setupLevel() {
-  // Atualiza exibição de nível
+  // Exibe nível
   levelElement.textContent = `Nível: ${currentLevel}`;
 
-  // Define número de pares (4 por nível até o limite)
-  const pairs = Math.min(4 * currentLevel, icons.length);
+  // Quantidade de pares (4 por nível)
+  const pairs = Math.min(currentLevel * 4, icons.length);
 
-  // Prepara e embaralha deck
+  // Prepara e embaralha o deck
   deck = icons.slice(0, pairs).concat(icons.slice(0, pairs));
   shuffle(deck);
 
-  // Ajusta grade e estado
+  // Ajusta grid e zera estados
   gameBoard.className = `game-board level-${currentLevel}`;
   gameBoard.innerHTML = '';
   [firstCard, secondCard, lockBoard, matchedCount] = [null, null, false, 0];
   stopTimer();
 
-  // Cria cartas
+  // Cria cartas (sempre viradas para baixo)
   deck.forEach(icon => {
     const card = document.createElement('div');
     card.classList.add('card');
@@ -83,11 +87,19 @@ function setupLevel() {
     gameBoard.appendChild(card);
   });
 
-  startTimer();
+  // Pré-visualização: mostra todas por 3s, depois vira, inicia cronômetro
+  const cards = gameBoard.querySelectorAll('.card');
+  cards.forEach(c => c.classList.add('flipped'));
+
+  setTimeout(() => {
+    cards.forEach(c => c.classList.remove('flipped'));
+    startTimer();
+  }, 3000);
 }
 
 function flipCard() {
   if (lockBoard || this === firstCard) return;
+
   this.classList.add('flipped');
 
   if (!firstCard) {
@@ -110,7 +122,7 @@ function disableCards() {
   matchedCount += 2;
   resetTurn();
 
-  // Se terminou o nível, avança
+  // Se terminou o nível, avança ou finaliza
   if (matchedCount === deck.length) {
     stopTimer();
     setTimeout(() => {
@@ -121,7 +133,7 @@ function disableCards() {
       } else {
         alert(`Parabéns! Você completou todos os níveis em ${timeElapsed}s.`);
       }
-    }, 300);
+    }, 500);
   }
 }
 
@@ -138,39 +150,3 @@ function resetTurn() {
   [firstCard, secondCard] = [null, null];
   lockBoard = false;
 }
-
-function setupLevel() {
-  // … seu cálculo de pairs e embaralhamento …
-
-  gameBoard.innerHTML = '';
-  [firstCard, secondCard, lockBoard, matchedCount] = [null, null, false, 0];
-
-  // Cria as cartas SEM a classe .flipped
-  deck.forEach(icon => {
-    const card = document.createElement('div');
-    card.classList.add('card');
-    card.dataset.icon = icon;
-    card.innerHTML = `
-      <div class="card-inner">
-        <div class="card-front">${icon}</div>
-        <div class="card-back"></div>
-      </div>
-    `;
-    card.addEventListener('click', flipCard);
-    gameBoard.appendChild(card);
-  });
-
-  startTimer();
-}
-
-// após montar o tabuleiro…
-gameBoard.querySelectorAll('.card').forEach(card =>
-  card.classList.add('flipped')  // mostra fronts
-);
-
-setTimeout(() => {
-  gameBoard.querySelectorAll('.card').forEach(card =>
-    card.classList.remove('flipped')  // volta pro verso
-  );
-  startTimer();
-}, 3000);

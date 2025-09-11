@@ -28,12 +28,9 @@ h1 {
   margin-bottom: 1.5rem;
 }
 
-.game-board.level-1 {
-  grid-template-columns: repeat(4, 100px);
-}
-
+.game-board.level-1,
 .game-board.level-2 {
-  grid-template-columns: repeat(6, 100px);
+  grid-template-columns: repeat(4, 100px);
 }
 
 .game-board.level-3 {
@@ -49,26 +46,27 @@ h1 {
 }
 
 .card-inner {
+  position: absolute;
   width: 100%;
   height: 100%;
   transition: transform 0.5s;
   transform-style: preserve-3d;
-  position: absolute;
-}
-
-.card.flipped .card-inner {
-  transform: rotateY(180deg);
 }
 
 .card-front,
 .card-back {
+  position: absolute;
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
   border-radius: 8px;
-  position: absolute;
   top: 0;
   left: 0;
+}
+
+.card-back {
+  background-color: #4a90e2;
+  transform: rotateY(0deg);
 }
 
 .card-front {
@@ -77,36 +75,9 @@ h1 {
   align-items: center;
   justify-content: center;
   font-size: 2rem;
-}
-
-.card-back {
-  background-color: #4a90e2;
   transform: rotateY(180deg);
 }
 
-/* container e layout continuam iguais… */
-
-.card-inner {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  transform-style: preserve-3d;
-  transition: transform 0.5s;
-}
-
-/* estado inicial: verso visível, frente escondida */
-.card-front {
-  backface-visibility: hidden;
-  transform: rotateY(180deg);
-}
-
-.card-back {
-  backface-visibility: hidden;
-  /* sem rotação: quadro liso visível */
-  transform: rotateY(0deg);
-}
-
-/* quando “flipped”, giramos o .card-inner e mostramos a frente */
 .card.flipped .card-inner {
   transform: rotateY(180deg);
 }
